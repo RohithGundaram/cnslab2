@@ -1,28 +1,26 @@
-import math
-
-# Euclidean Algorithm to find GCD
-def euclidean_algorithm(a, b):
-    return math.gcd(a, b)
-
-# Example usage
-number1 = 48
-number2 = 18
-gcd = euclidean_algorithm(number1, number2)
-print(f"The GCD of {number1} and {number2} is: {gcd}")
+def gcd(a, b):
+    if a == 0:
+        return b
+ 
+    return gcd(b % a, a)
 
 
+num1 = int(input("Enter Value of a: "))
+num2 = int(input("Enter Value of b: "))
 
-# Extended Euclidean Algorithm
-def extended_euclidean_algorithm(a, b):
+gcd_val= gcd(num1, num2)
+
+print("GCD using Euclidean Algorithm "+str(num1)+" and " +str(num2)+": ", gcd_val)
+
+def advanced_euclidean_algorithm(a, b):
     if b == 0:
         return a, 1, 0
     else:
-        gcd, x, y = extended_euclidean_algorithm(b, a % b)
+        gcd, x, y = advanced_euclidean_algorithm(b, a % b)
         return gcd, y, x - (a // b) * y
 
-# Example usage
-number1 = 48
-number2 = 18
-gcd, x, y = extended_euclidean_algorithm(number1, number2)
-print(f"The GCD of {number1} and {number2} is: {gcd}")
-print(f"Bézout coefficients (x, y) are: {x}, {y}")
+# Example Usage
+num1 = int(input("Enter Value of a: "))
+num2 = int(input("Enter Value of b: "))
+gcd, x, y = advanced_euclidean_algorithm(num1, num2)
+print(f"GCD using Advanced Euclidean Algorithm: {gcd}, x = {x}, y = {y}")
