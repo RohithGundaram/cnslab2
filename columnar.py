@@ -1,26 +1,54 @@
-def columnar_transposition(text, key, is_decrypt=False):
-    if not is_decrypt:
-        text = text.replace(" ", "")
-        num_rows = -(-len(text) // len(key))  # Ceiling division to get the number of rows
-        text += '_' * (num_rows * len(key) - len(text))
-        grid = [text[i:i + len(key)] for i in range(0, len(text), len(key)]
-        encrypted_text = ''.join(grid[key.index(str(i + 1))] for i in range(len(key)))
-        return encrypted_text
-    else:
-        num_rows = len(text) // len(key)
-        grid = [''] * num_rows
-        for k in key:
-            col = int(k) - 1
-            for j in range(num_rows):
-                grid[j] += text[num_rows * col + j]
-        return ''.join(grid)
+def simple_columnar_transposition(message, key):
+    cipher = ''
+    key_order = sorted(range(len(key)), key=lambda k: key[k])
+    num_cols = len(key)
+    num_rows = -(-len(message) // num_cols)  # Ceiling division
+    
+    # Fill the grid
+    grid = [['' for _ in range(num_cols)] for _ in range(num_rows)]
+    for i, char in enumerate(message):
+        grid[i // num_cols][i % num_cols] = char
 
-# Example usage
-message = "This is a secret message"
-encryption_key = "4321"  # Key to rearrange columns
+    # Read out by columns based on the key order
+    for k in key_order:
+        for j in range(num_rows):
+            cipher += grid[j][k]
+            
+    return cipher
 
-encrypted = columnar_transposition(message, encryption_key)
-print("Encrypted message:", encrypted)
+# Example Usage
+message = "Hello World"
 
-decrypted = columnar_transposition(encrypted, encryption_key, is_decrypt=True)
-print("Decrypted message:", decrypted)
+key = "KEY"
+encrypted_message = simple_columnar_transposition(message, key)
+print("Encrypted message:", encrypted_message)
+def advanced_columnar_transposition(message, key):
+    key_order = sorted(range(len(key)), key=lambda k: key[k])
+    num_cols = len(key)
+    num_rows = -(-len(message) // num_cols)  # Ceiling division
+
+    # Fill the grid
+    grid = [['' for _ in range(num_cols)] for _ in range(num_rows)]
+    for i, char in enumerate(message):
+        grid[i // num_cols][i % num_cols] = char
+
+    # Rearrange rows based on key order
+    rearranged_grid = [['' for _ in range(num_cols)] for _ in range(num_rows)]
+    for i, order in enumerate(key_order):
+        for j in range(num_rows):
+            if (j * num_cols + order) < len(message):
+                rearranged_grid[j][i] = grid[j][order]
+
+    # Read out by columns
+    cipher = ''
+    for j in range(num_cols):
+        for i in range(num_rows):
+            cipher += rearranged_grid[i][j]
+
+    return cipher
+
+# Example Usage
+message = "Hello World"
+key = "KEY"
+encrypted_message = advanced_columnar_transposition(message, key)
+print("Encrypted message (Advanced):", encrypted_message)
